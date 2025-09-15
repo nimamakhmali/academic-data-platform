@@ -1,0 +1,86 @@
+openapi: 3.0.3
+info:
+  title: Academic Data Platform API
+  version: 0.1.0
+servers:
+  - url: https://api.example.edu/v1
+paths:
+  /auth/login:
+    post:
+      summary: Login with email/password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: JWT token pair
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /students:
+    get:
+      summary: List students
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+    post:
+      summary: Create student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentCreate'
+      responses:
+        '201':
+          description: Created
+  /students/{id}:
+    get:
+      summary: Get student
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+      required: [email, password]
+    LoginResponse:
+      type: object
+      properties:
+        access_token: { type: string }
+        refresh_token: { type: string }
+        token_type: { type: string, example: Bearer }
+    Student:
+      type: object
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        student_no: { type: string }
+        entry_year: { type: integer }
+    StudentCreate:
+      allOf:
+        - $ref: '#/components/schemas/Student'
+      required: [user_id, student_no]
