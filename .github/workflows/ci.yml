@@ -22,22 +22,23 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt', 'backend/requirements-dev.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r backend/requirements.txt
+          pip install -r backend/requirements.txt -r backend/requirements-dev.txt
 
-      - name: Import check (FastAPI app)
+      - name: Run tests
         env:
           PYTHONPATH: backend
         run: |
-          python -c "import app.main; print('Import OK')"
+          pytest -q backend/tests
 
       - name: Print versions
+        if: always()
         run: |
           python --version
           pip freeze | sed -n '1,50p'
