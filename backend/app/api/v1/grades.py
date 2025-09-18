@@ -4,6 +4,7 @@ from app.db.session import SessionLocal
 from app.models.grade import Grade
 from app.models.enrollment import Enrollment
 from app.schemas.grade import GradeCreate, GradeOut, GradeUpdate
+from app.services.authz import require_roles
 
 router = APIRouter(prefix="/api/v1/grades", tags=["grades"])
 
@@ -21,7 +22,7 @@ def list_grades(db: Session = Depends(get_db)):
 	return db.query(Grade).all()
 
 
-@router.post("/", response_model=GradeOut, status_code=201)
+@router.post("/", response_model=GradeOut, status_code=201, dependencies=[Depends(require_roles("faculty", "admin"))])
 def create_grade(payload: GradeCreate, db: Session = Depends(get_db)):
 	# verify enrollment exists
 	enr = db.get(Enrollment, payload.enrollment_id)
@@ -42,7 +43,7 @@ def get_grade(grade_id: int, db: Session = Depends(get_db)):
 	return obj
 
 
-@router.patch("/{grade_id}", response_model=GradeOut)
+@router.patch("/{grade_id}", response_model=GradeOut, dependencies=[Depends(require_roles("faculty", "admin"))])
 def update_grade(grade_id: int, payload: GradeUpdate, db: Session = Depends(get_db)):
 	obj = db.get(Grade, grade_id)
 	if not obj:
@@ -55,7 +56,7 @@ def update_grade(grade_id: int, payload: GradeUpdate, db: Session = Depends(get_
 	return obj
 
 
-@router.delete("/{grade_id}", status_code=204)
+@router.delete("/{grade_id}", status_code=204, dependencies=[Depends(require_roles("faculty", "admin"))])
 def delete_grade(grade_id: int, db: Session = Depends(get_db)):
 	obj = db.get(Grade, grade_id)
 	if not obj:
