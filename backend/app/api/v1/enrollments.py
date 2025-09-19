@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
 from app.models.enrollment import Enrollment
 from app.schemas.enrollment import EnrollmentCreate, EnrollmentOut, EnrollmentUpdate
+from app.services.authz import require_roles
 
 router = APIRouter(prefix="/api/v1/enrollments", tags=["enrollments"])
 
@@ -20,7 +21,7 @@ def list_enrollments(db: Session = Depends(get_db)):
 	return db.query(Enrollment).all()
 
 
-@router.post("/", response_model=EnrollmentOut, status_code=201)
+@router.post("/", response_model=EnrollmentOut, status_code=201, dependencies=[Depends(require_roles("faculty", "admin"))])
 def create_enrollment(payload: EnrollmentCreate, db: Session = Depends(get_db)):
 	# Check if student exists
 	from app.models.student import Student
@@ -63,7 +64,7 @@ def get_enrollment(enrollment_id: int, db: Session = Depends(get_db)):
 	return obj
 
 
-@router.patch("/{enrollment_id}", response_model=EnrollmentOut)
+@router.patch("/{enrollment_id}", response_model=EnrollmentOut, dependencies=[Depends(require_roles("faculty", "admin"))])
 def update_enrollment(enrollment_id: int, payload: EnrollmentUpdate, db: Session = Depends(get_db)):
 	obj = db.get(Enrollment, enrollment_id)
 	if not obj:
@@ -76,7 +77,7 @@ def update_enrollment(enrollment_id: int, payload: EnrollmentUpdate, db: Session
 	return obj
 
 
-@router.delete("/{enrollment_id}", status_code=204)
+@router.delete("/{enrollment_id}", status_code=204, dependencies=[Depends(require_roles("faculty", "admin"))])
 def delete_enrollment(enrollment_id: int, db: Session = Depends(get_db)):
 	obj = db.get(Enrollment, enrollment_id)
 	if not obj:
