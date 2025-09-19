@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
 from app.models.course import Course
 from app.schemas.course import CourseCreate, CourseOut, CourseUpdate
+from app.services.pagination import pagination_params, apply_pagination
 
 router = APIRouter(prefix="/api/v1/courses", tags=["courses"])
 
@@ -16,8 +17,10 @@ def get_db():
 
 
 @router.get("/", response_model=list[CourseOut])
-def list_courses(db: Session = Depends(get_db)):
-	return db.query(Course).all()
+def list_courses(db: Session = Depends(get_db), pag=Depends(pagination_params)):
+	limit, offset = pag
+	q = db.query(Course)
+	return apply_pagination(q, limit, offset).all()
 
 
 @router.post("/", response_model=CourseOut, status_code=201)

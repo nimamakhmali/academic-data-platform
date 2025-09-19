@@ -5,6 +5,7 @@ from app.models.grade import Grade
 from app.models.enrollment import Enrollment
 from app.schemas.grade import GradeCreate, GradeOut, GradeUpdate
 from app.services.authz import require_roles
+from app.services.pagination import pagination_params, apply_pagination
 
 router = APIRouter(prefix="/api/v1/grades", tags=["grades"])
 
@@ -18,8 +19,10 @@ def get_db():
 
 
 @router.get("/", response_model=list[GradeOut])
-def list_grades(db: Session = Depends(get_db)):
-	return db.query(Grade).all()
+def list_grades(db: Session = Depends(get_db), pag=Depends(pagination_params)):
+	limit, offset = pag
+	q = db.query(Grade)
+	return apply_pagination(q, limit, offset).all()
 
 
 @router.post("/", response_model=GradeOut, status_code=201, dependencies=[Depends(require_roles("faculty", "admin"))])

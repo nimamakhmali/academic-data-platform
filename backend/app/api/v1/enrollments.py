@@ -4,6 +4,7 @@ from app.db.session import SessionLocal
 from app.models.enrollment import Enrollment
 from app.schemas.enrollment import EnrollmentCreate, EnrollmentOut, EnrollmentUpdate
 from app.services.authz import require_roles
+from app.services.pagination import pagination_params, apply_pagination
 
 router = APIRouter(prefix="/api/v1/enrollments", tags=["enrollments"])
 
@@ -17,8 +18,10 @@ def get_db():
 
 
 @router.get("/", response_model=list[EnrollmentOut])
-def list_enrollments(db: Session = Depends(get_db)):
-	return db.query(Enrollment).all()
+def list_enrollments(db: Session = Depends(get_db), pag=Depends(pagination_params)):
+	limit, offset = pag
+	q = db.query(Enrollment)
+	return apply_pagination(q, limit, offset).all()
 
 
 @router.post("/", response_model=EnrollmentOut, status_code=201, dependencies=[Depends(require_roles("faculty", "admin"))])
