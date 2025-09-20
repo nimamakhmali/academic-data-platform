@@ -37,3 +37,4 @@ class ScheduleResponse(BaseModel):
 	term: str
 	items: List[ScheduledItem]
 	unscheduled: List[str] = Field(default_factory=list)
+

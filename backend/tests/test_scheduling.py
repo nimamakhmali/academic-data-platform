@@ -49,3 +49,4 @@ async def test_scheduling_unscheduled_when_capacity_low():
 		assert resp.status_code == 200
 		data = resp.json()
 		assert data["unscheduled"] == ["SEC1"]
+

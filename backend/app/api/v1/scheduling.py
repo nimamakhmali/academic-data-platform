@@ -8,3 +8,4 @@ router = APIRouter(prefix="/api/v1/scheduling", tags=["scheduling"])
 @router.post("/generate", response_model=ScheduleResponse)
 def generate_schedule(payload: ScheduleRequest):
 	return greedy_schedule(payload)
+

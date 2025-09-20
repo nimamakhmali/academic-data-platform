@@ -24,3 +24,4 @@ async def test_enrollments_rbac(monkeypatch, tmp_path):
 		# authorized create
 		resp = await ac.post("/api/v1/enrollments/", headers=headers, json={"student_id": student.json()["id"], "course_id": course.json()["id"], "term": "1402-1"})
 		assert resp.status_code == 201
+

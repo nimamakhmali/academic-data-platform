@@ -35,3 +35,4 @@ def greedy_schedule(req: ScheduleRequest) -> ScheduleResponse:
 		if not placed:
 			unscheduled.append(sec.section_id)
 	return ScheduleResponse(term=req.term, items=assigned, unscheduled=unscheduled)
+

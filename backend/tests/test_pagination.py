@@ -19,3 +19,4 @@ async def test_students_pagination(monkeypatch, tmp_path):
 		resp = await ac.get("/api/v1/students/?limit=2&offset=2")
 		assert resp.status_code == 200
 		assert len(resp.json()) == 1
+
