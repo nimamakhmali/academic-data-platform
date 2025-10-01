@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
 
@@ -11,3 +11,10 @@ class Course(Base):
 	title: Mapped[str] = mapped_column(String(255))
 	credits: Mapped[int] = mapped_column(Integer, default=3)
 	department: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+	# Relationships
+	enrollments: Mapped[list["Enrollment"]] = relationship(
+		back_populates="course",
+		cascade="all, delete-orphan",
+		lazy="selectin",
+	)

@@ -13,9 +13,7 @@ from app.db.session import engine
 app = FastAPI(title="Academic Data Platform API", version="0.1.0")
 
 
-@app.on_event("startup")
-def on_startup():
-	Base.metadata.create_all(bind=engine)
+# Note: DB schema is managed exclusively via Alembic migrations.
 
 
 @app.get("/health")

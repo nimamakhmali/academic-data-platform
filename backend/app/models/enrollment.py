@@ -12,3 +12,6 @@ class Enrollment(Base):
 	term: Mapped[str] = mapped_column(String(10), nullable=False)
 	grade: Mapped[float | None] = mapped_column(nullable=True)
 
+	# Relationships
+	student: Mapped["Student"] = relationship(back_populates="enrollments", lazy="joined")
+	course: Mapped["Course"] = relationship(back_populates="enrollments", lazy="joined")
