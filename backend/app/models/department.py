@@ -1,8 +1,13 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from sqlalchemy import Integer, String, Text, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from .faculty import Faculty
+    from .course import Course
+    from .student import Student
 
 
 class Department(Base):
@@ -81,10 +86,23 @@ class Department(Base):
         comment="Whether department is currently active"
     )
 
-    # Relationships (will be defined after creating Faculty and Course models)
-    # faculty: Mapped[List["Faculty"]] = relationship(back_populates="department")
-    # courses: Mapped[List["Course"]] = relationship(back_populates="department") 
-    # students: Mapped[List["Student"]] = relationship(back_populates="department")
+    # Relationships
+    faculty_members: Mapped[List["Faculty"]] = relationship(
+        back_populates="department",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    
+    courses: Mapped[List["Course"]] = relationship(
+        back_populates="department",
+        cascade="all, delete-orphan", 
+        lazy="selectin"
+    )
+    
+    students: Mapped[List["Student"]] = relationship(
+        back_populates="department",
+        lazy="selectin"
+    )
 
     def __repr__(self) -> str:
         return f"<Department(id={self.id}, code='{self.code}', name='{self.name}')>"

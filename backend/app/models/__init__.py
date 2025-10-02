@@ -11,6 +11,8 @@ from .course import Course
 from .enrollment import Enrollment
 from .grade import Grade
 from .department import Department
+from .faculty import Faculty
+from .research_item import ResearchItem
 
 __all__ = [
     "User",
@@ -19,4 +21,6 @@ __all__ = [
     "Enrollment",
     "Grade",
     "Department",
+    "Faculty",
+    "ResearchItem",
 ]
