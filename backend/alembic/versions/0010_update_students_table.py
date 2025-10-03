@@ -54,3 +54,4 @@ def downgrade():
     op.drop_column("students", "level")
     op.drop_column("students", "department_id")
     op.drop_column("students", "user_id")
+

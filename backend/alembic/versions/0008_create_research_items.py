@@ -60,3 +60,4 @@ def downgrade():
     op.drop_index("ix_research_items_title", table_name="research_items")
     op.drop_index("ix_research_items_id", table_name="research_items")
     op.drop_table("research_items")
+

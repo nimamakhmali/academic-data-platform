@@ -52,3 +52,4 @@ def downgrade():
     
     # Restore the old department column
     op.add_column("courses", sa.Column("department", sa.String(length=64), nullable=True))
+

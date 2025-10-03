@@ -36,3 +36,4 @@ def downgrade():
     op.drop_column("users", "last_login")
     op.drop_column("users", "updated_at")
     op.drop_column("users", "created_at")
+
